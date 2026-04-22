@@ -1,7 +1,9 @@
 # Rockchip RK3328 quad core 1GB 2 x GBE USB2
 BOARD_NAME="Nanopi R2C"
+BOARD_VENDOR="friendlyelec"
 BOARDFAMILY="rockchip64"
 BOARD_MAINTAINER=""
+INTRODUCED="2020"
 BOOTCONFIG="nanopi-r2s-rk3328_defconfig"
 KERNEL_TARGET="current,edge"
 KERNEL_TEST_TARGET="current"

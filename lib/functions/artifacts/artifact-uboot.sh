@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-2.0
 #
-# Copyright (c) 2013-2023 Igor Pecovnik, igor@armbian.com
+# Copyright (c) 2013-2026 Igor Pecovnik, igor@armbian.com
 #
 # This file is a part of the Armbian Build Framework
 # https://github.com/armbian/build/
@@ -40,8 +40,14 @@ function artifact_uboot_prepare_version() {
 
 	declare short_hash_size=4
 
+	declare -i uboot_git_cache_ttl_seconds=3600 # by default
+	if [[ "${UBOOT_GIT_CACHE_TTL}" != "" ]]; then
+		uboot_git_cache_ttl_seconds="${UBOOT_GIT_CACHE_TTL}"
+		display_alert "Setting u-boot git cache TTL to" "${uboot_git_cache_ttl_seconds}" "info"
+	fi
+
 	declare -A GIT_INFO_UBOOT=([GIT_SOURCE]="${BOOTSOURCE}" [GIT_REF]="${BOOTBRANCH}")
-	run_memoized GIT_INFO_UBOOT "git2info" memoized_git_ref_to_info "include_makefile_body"
+	memoize_cache_ttl=$uboot_git_cache_ttl_seconds run_memoized GIT_INFO_UBOOT "git2info" memoized_git_ref_to_info "include_makefile_body"
 	debug_dict GIT_INFO_UBOOT
 
 	# Sanity check, the SHA1 gotta be sane.
@@ -80,9 +86,10 @@ function artifact_uboot_prepare_version() {
 	declare hash_hooks="undetermined"
 	hash_hooks="$(echo "${extension_hooks_hashed[@]}" | sha256sum | cut -d' ' -f1)"
 
-	# Hash the old-timey hooks
+	# Hash the old-timey hooks and regular core functions (atf code, used by u-boot build process)
 	declare hash_functions="undetermined"
-	calculate_hash_for_function_bodies "uboot_custom_postprocess" "write_uboot_platform" "write_uboot_platform_mtd" "setup_write_uboot_platform"
+	calculate_hash_for_function_bodies "uboot_custom_postprocess" "write_uboot_platform" "write_uboot_platform_mtd" \
+		"setup_write_uboot_platform" "compile_atf"
 	declare hash_uboot_functions="${hash_functions}"
 
 	# Hash those two together
@@ -98,7 +105,7 @@ function artifact_uboot_prepare_version() {
 		"${BOOTDELAY}" "${UBOOT_DEBUGGING}" "${UBOOT_TARGET_MAP}"        # general for all families
 		"${BOOT_SCENARIO}" "${BOOT_SUPPORT_SPI}" "${BOOT_SOC}"           # rockchip stuff, sorry.
 		"${DDR_BLOB}" "${BL31_BLOB}" "${BL32_BLOB}" "${MINILOADER_BLOB}" # More rockchip stuff, even more sorry.
-		"${ATF_COMPILE}" "${ATFBRANCH}" "${ATFPATCHDIR}"                 # arm-trusted-firmware stuff
+		"${ATF_COMPILE}" "${ATFSOURCE}" "${ATFBRANCH}" "${ATFPATCHDIR}"  # arm-trusted-firmware stuff
 		"${CRUSTCONFIG}" "${CRUSTBRANCH}" "${CRUSTPATCHDIR}"             # crust stuff
 		"${IMAGE_PARTITION_TABLE}" "${BOOT_FDT_FILE}" "${SERIALCON}"     # image and kernel related, to be used as reference/docs
 		"${SRC_EXTLINUX}" "${SRC_CMDLINE}"                               # image and kernel related, to be used as reference/docs

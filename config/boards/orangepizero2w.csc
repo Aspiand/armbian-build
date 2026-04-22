@@ -1,7 +1,9 @@
 # Allwinner H618 quad core 1GB/1.5GB/2GB/4GB RAM
 BOARD_NAME="Orange Pi Zero2W"
+BOARD_VENDOR="xunlong"
 BOARDFAMILY="sun50iw9"
 BOARD_MAINTAINER="chraac"
+INTRODUCED="2023"
 BOOTCONFIG="orangepi_zero2w_defconfig"
 BOOTBRANCH="tag:v2025.04"
 BOOTPATCHDIR="v2025-sunxi"

@@ -1,7 +1,9 @@
 # RISC-V StarFive Visionfive V2
 BOARD_NAME="VisionFive2"
+BOARD_VENDOR="star-five"
 BOARDFAMILY="starfive2"
 BOARD_MAINTAINER="libiunc"
+INTRODUCED="2023"
 KERNEL_TARGET="vendor"
 BOOT_FDT_FILE="starfive/jh7110-starfive-visionfive-2-v1.3b.dtb"
 SRC_EXTLINUX="yes"

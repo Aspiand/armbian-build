@@ -1,12 +1,14 @@
 # Allwinner A64 quad core 1GB RAM SoC GBE for 3D printers
 BOARD_NAME="Iagent Recore"
+BOARD_VENDOR="recore"
 BOARDFAMILY="sun50iw1"
 BOOTCONFIG="recore_defconfig"
-KERNEL_TARGET="legacy,current,edge"
+KERNEL_TARGET="current,edge,legacy"
 KERNEL_TEST_TARGET="current"
 MODULES="g_serial"
 BOOT_LOGO="yes"
 BOARD_MAINTAINER="eliasbakken"
+INTRODUCED="2021"
 
 function post_family_config__shrink_atf() {
 	display_alert "Choose ATF branch 🍰" "recore"
